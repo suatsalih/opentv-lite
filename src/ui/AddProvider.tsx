@@ -42,6 +42,20 @@ export function AddProvider(props: { onboarding: boolean; onDone(): void; onCanc
     if (el && el.tagName === "INPUT" && el !== inputs.current[field]) el.blur();
   }, [field]);
 
+  // With a real keyboard (a desktop browser, or one plugged into the TV) typing should just
+  // work: a printable key on a highlighted field opens it and the character lands in it.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key.length !== 1 || e.ctrlKey || e.metaKey || e.altKey) return;
+      const active = document.activeElement as HTMLElement | null;
+      if (active && active.tagName === "INPUT") return;
+      const input = inputs.current[field];
+      if (input) input.focus();
+    };
+    document.addEventListener("keydown", onKey, true);
+    return () => document.removeEventListener("keydown", onKey, true);
+  }, [field]);
+
   function update(name: string, value: string) {
     setValues((prev) => ({ ...prev, [name]: value }));
   }
@@ -147,6 +161,9 @@ export function AddProvider(props: { onboarding: boolean; onDone(): void; onCanc
           value={values[name] || ""}
           onInput={(e) => update(name, (e.target as HTMLInputElement).value)}
           onBlur={() => onFieldDone(name)}
+          // Clicking a field (mouse, or LG's pointer remote) moves the highlight to it.
+          onFocus={() => setFocus(fields.indexOf(name))}
+          placeholder={t("add_type_hint")}
           autoComplete="off"
           spellcheck={false}
         />
@@ -168,8 +185,12 @@ export function AddProvider(props: { onboarding: boolean; onDone(): void; onCanc
       <div class="form">
         <div class={"form-row" + (field === "kind" ? " focused" : "")}>
           <div class="segmented">
-            <span class={kind === "xtream" ? "on" : ""}>{t("add_kind_xtream")}</span>
-            <span class={kind === "m3u" ? "on" : ""}>{t("add_kind_m3u")}</span>
+            <span class={kind === "xtream" ? "on" : ""} onClick={() => setKind("xtream")}>
+              {t("add_kind_xtream")}
+            </span>
+            <span class={kind === "m3u" ? "on" : ""} onClick={() => setKind("m3u")}>
+              {t("add_kind_m3u")}
+            </span>
           </div>
         </div>
 
@@ -180,8 +201,12 @@ export function AddProvider(props: { onboarding: boolean; onDone(): void; onCanc
           <div class={"form-row" + (field === "format" ? " focused" : "")}>
             <label class="form-label">{t("add_format")}</label>
             <div class="segmented">
-              <span class={format === "m3u8" ? "on" : ""}>{t("add_format_hls")}</span>
-              <span class={format === "ts" ? "on" : ""}>{t("add_format_ts")}</span>
+              <span class={format === "m3u8" ? "on" : ""} onClick={() => setFormat("m3u8")}>
+                {t("add_format_hls")}
+              </span>
+              <span class={format === "ts" ? "on" : ""} onClick={() => setFormat("ts")}>
+                {t("add_format_ts")}
+              </span>
             </div>
           </div>
         )}
@@ -190,10 +215,15 @@ export function AddProvider(props: { onboarding: boolean; onDone(): void; onCanc
         {inputRow("epg", t("add_epg"), "url")}
 
         <div class="form-row buttons">
-          <div class={"button primary" + (field === "buttons" && button === 0 ? " focused" : "")}>
+          <div class={"button primary" + (field === "buttons" && button === 0 ? " focused" : "")} onClick={submit}>
             {busy ? t("add_connecting") : t("add_save")}
           </div>
-          <div class={"button" + (field === "buttons" && button === 1 ? " focused" : "")}>{t("add_cancel")}</div>
+          <div
+            class={"button" + (field === "buttons" && button === 1 ? " focused" : "")}
+            onClick={() => (props.onboarding ? exitApp() : props.onCancel())}
+          >
+            {t("add_cancel")}
+          </div>
         </div>
         {error && <div class="form-error">{error}</div>}
       </div>

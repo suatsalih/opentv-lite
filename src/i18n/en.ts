@@ -38,6 +38,7 @@ export const en = {
   add_format: "Live stream format",
   add_format_hls: "HLS (recommended)",
   add_format_ts: "MPEG-TS",
+  add_type_hint: "Press OK to type",
   add_save: "Connect",
   add_cancel: "Cancel",
   add_connecting: "Connecting to your provider…",

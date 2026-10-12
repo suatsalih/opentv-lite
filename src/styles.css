@@ -33,6 +33,11 @@ body {
   color: var(--text);
   font-family: Roboto, "LG Smart UI", "SamsungOne", "Samsung Sans", "Helvetica Neue", Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
+}
+
+/* Samsung remotes have no pointer. LG's Magic Remote and a desktop mouse do, so keep it there. */
+html.platform-tizen,
+html.platform-tizen body {
   cursor: none;
 }
 
@@ -786,6 +791,10 @@ html.platform-tizen body {
   outline: none;
 }
 
+.form-input::placeholder {
+  color: var(--text-faint);
+}
+
 .form-input:focus {
   border-color: var(--accent);
 }
@@ -800,6 +809,11 @@ html.platform-tizen body {
 
 .segmented {
   display: flex;
+}
+
+.segmented span,
+.button {
+  cursor: pointer;
 }
 
 .segmented span {
