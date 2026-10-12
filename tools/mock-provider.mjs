@@ -59,14 +59,48 @@ export const CHANNELS = NAMES.map(([name, cat], i) => ({
 const SHOWS = ["News at Six", "EastEnders", "Mastermind", "Only Connect", "Panorama", "Gardeners' World",
   "Match of the Day", "The Chase", "Pointless", "Bake Off", "Countdown", "Doctor Who", "Top Gear"];
 
+/**
+ * ffmpeg on PATH, or where `winget install ffmpeg` puts it on Windows (a fresh install is not on
+ * PATH until the next sign-in). Undefined when it cannot be found.
+ */
+function findFfmpeg() {
+  const candidates = ["ffmpeg"];
+  if (process.platform === "win32" && process.env.LOCALAPPDATA) {
+    candidates.push(join(process.env.LOCALAPPDATA, "Microsoft", "WinGet", "Links", "ffmpeg.exe"));
+  }
+  for (const c of candidates) {
+    try {
+      execFileSync(c, ["-version"], { stdio: "ignore" });
+      return c;
+    } catch {
+      /* try the next one */
+    }
+  }
+  return undefined;
+}
+
+let hasVideo = false;
+
+/** Returns false (and explains) when test video cannot be made; the API and guide still work. */
 function ensureMedia() {
+  const ffmpeg = findFfmpeg();
+  const have = existsSync(join(media, `seg-${SEGMENTS - 1}.ts`)) && (!VP9 || existsSync(join(media, "vp9", "v3")));
+  if (!ffmpeg) {
+    if (have) return true;
+    console.warn(
+      "\n  ffmpeg was not found, so the test channels will have no video (the channel list and\n" +
+        "  guide still work). Install it to get video: Windows `winget install ffmpeg`,\n" +
+        "  macOS `brew install ffmpeg`, Linux `sudo apt install ffmpeg`. Then restart this.\n",
+    );
+    return false;
+  }
   const duration = String(SEGMENT_SECONDS * SEGMENTS);
   const sources = ["-f", "lavfi", "-i", `testsrc2=size=960x540:rate=25:duration=${duration}`,
     "-f", "lavfi", "-i", `sine=frequency=440:duration=${duration}`];
   if (!existsSync(join(media, `seg-${SEGMENTS - 1}.ts`)) || existsSync(join(media, `seg-${SEGMENTS}.ts`))) {
     mkdirSync(media, { recursive: true });
     console.log("Generating H.264 test video (one-off)…");
-    execFileSync("ffmpeg", ["-loglevel", "error", "-y", ...sources,
+    execFileSync(ffmpeg, ["-loglevel", "error", "-y", ...sources,
       "-c:v", "libx264", "-preset", "veryfast", "-profile:v", "main", "-pix_fmt", "yuv420p", "-g", "50", "-keyint_min", "50", "-sc_threshold", "0",
       "-c:a", "aac", "-b:a", "96k",
       "-f", "segment", "-segment_time", String(SEGMENT_SECONDS), "-segment_format", "mpegts",
@@ -75,7 +109,7 @@ function ensureMedia() {
   if (VP9 && !existsSync(join(media, "vp9", "v3"))) {
     mkdirSync(join(media, "vp9"), { recursive: true });
     console.log("Generating VP9 test video (one-off)…");
-    execFileSync("ffmpeg", ["-loglevel", "error", "-y", ...sources,
+    execFileSync(ffmpeg, ["-loglevel", "error", "-y", ...sources,
       // No alt-ref/lookahead frames, so every 2 s segment starts on a decodable keyframe.
       "-c:v", "libvpx-vp9", "-deadline", "realtime", "-cpu-used", "8", "-b:v", "800k", "-g", "50", "-keyint_min", "50",
       "-auto-alt-ref", "0", "-lag-in-frames", "0",
@@ -85,6 +119,7 @@ function ensureMedia() {
       join(media, "vp9", "index.m3u8")]);
     writeFileSync(join(media, "vp9", "v3"), ""); // marks media made with the current settings
   }
+  return true;
 }
 
 function livePlaylist() {
@@ -144,7 +179,7 @@ function send(res, status, type, body) {
 }
 
 export function startMock() {
-  ensureMedia();
+  hasVideo = ensureMedia();
   return http
     .createServer((req, res) => {
       const u = new URL(req.url, "http://localhost");
@@ -168,11 +203,13 @@ export function startMock() {
         return send(res, 200, "application/xml", xml);
       }
       if (u.pathname === "/get.php") return authed ? send(res, 200, "audio/x-mpegurl", m3u()) : send(res, 403, "text/plain", "forbidden");
+      if (/^\/(live|timeshift)\//.test(u.pathname) && !hasVideo) return send(res, 404, "text/plain", "no test video: install ffmpeg");
       if (/^\/(live|timeshift)\//.test(u.pathname)) {
         if (!u.pathname.includes("/demo/demo/")) return send(res, 403, "text/plain", "forbidden");
         if (u.pathname.endsWith(".m3u8")) return send(res, 200, "application/vnd.apple.mpegurl", livePlaylist());
         return send(res, 200, "video/mp2t", readFileSync(join(media, "seg-0.ts")));
       }
+      if (/^\/(vp9|seg)\//.test(u.pathname) && !hasVideo) return send(res, 404, "text/plain", "no test video: install ffmpeg");
       const vp9 = /^\/vp9\/(init\.mp4|seg-\d+\.m4s)$/.exec(u.pathname);
       if (vp9) return send(res, 200, "video/mp4", readFileSync(join(media, "vp9", vp9[1])));
       const seg = /^\/seg\/(\d+)\.ts$/.exec(u.pathname);
