@@ -799,14 +799,6 @@ html.platform-tizen body {
   border-color: var(--accent);
 }
 
-.form-hint {
-  position: absolute;
-  left: 568px;
-  bottom: -2px;
-  font-size: 20px;
-  color: var(--text-faint);
-}
-
 .segmented {
   display: flex;
 }

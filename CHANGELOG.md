@@ -11,3 +11,5 @@ First release of OpenTV Lite, the Samsung (Tizen) and LG (webOS) edition of Open
 - Favourites with the yellow button, channel up/down zapping, reopens on the last channel watched
 - Settings: refresh or remove providers
 - About: licence, links and the PayPal donation QR code
+- Typing works with a real keyboard too: start typing on a highlighted field, or click it with a
+  mouse or LG's pointer remote

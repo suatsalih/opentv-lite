@@ -163,11 +163,10 @@ export function AddProvider(props: { onboarding: boolean; onDone(): void; onCanc
           onBlur={() => onFieldDone(name)}
           // Clicking a field (mouse, or LG's pointer remote) moves the highlight to it.
           onFocus={() => setFocus(fields.indexOf(name))}
-          placeholder={t("add_type_hint")}
+          placeholder={hint || t("add_type_hint")}
           autoComplete="off"
           spellcheck={false}
         />
-        {hint && field === name && <div class="form-hint">{hint}</div>}
       </div>
     );
   }

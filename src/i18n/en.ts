@@ -30,7 +30,7 @@ export const en = {
   add_kind_m3u: "M3U playlist link",
   add_name: "Name (optional)",
   add_server: "Server address",
-  add_server_hint: "e.g. http://example.com:8080 — pasting the whole link your provider sent also works",
+  add_server_hint: "e.g. http://example.com:8080 — or paste the whole link your provider sent",
   add_username: "Username",
   add_password: "Password",
   add_playlist: "Playlist URL",
