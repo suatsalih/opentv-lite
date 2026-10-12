@@ -153,7 +153,7 @@ await shot("favourites");
 // 7. Settings and About through the rail
 await press("ArrowLeft", "ArrowLeft", "ArrowDown", "Enter");
 await expectText(".screen-title", /Settings/, "rail opens settings");
-await expectText(".settings-body", /14 channels/, "provider listed with channel count");
+await expectText(".settings-body", /Channels: 14/, "provider listed with channel count");
 await shot("settings");
 await press("ArrowDown", "ArrowDown", "Enter");
 await expectText(".about-col", /suat\.salih@gmail\.com/, "about shows the PayPal address");

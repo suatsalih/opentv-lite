@@ -7,17 +7,19 @@
  * remote against the fake provider. Run whenever the UI changes:
  *
  *   MOCK_CODEC=vp9 npm run mock &   npm run dev &   node tools/screenshots.mjs
+ *
+ * LOCALE=de OUT=shots-de node tools/screenshots.mjs  — the same screens in another language.
  */
 import { mkdirSync } from "node:fs";
 import { chromium } from "playwright";
 
 const APP = process.env.APP_URL || "http://localhost:8080";
 const MOCK = process.env.MOCK_URL || "http://localhost:8090";
-const out = "docs/screenshots";
+const out = process.env.OUT || "docs/screenshots";
 mkdirSync(out, { recursive: true });
 
 const browser = await chromium.launch({ args: ["--autoplay-policy=no-user-gesture-required"] });
-const page = await browser.newPage({ viewport: { width: 1920, height: 1080 } });
+const page = await browser.newPage({ viewport: { width: 1920, height: 1080 }, locale: process.env.LOCALE || "en-GB" });
 
 async function press(...keys) {
   for (const k of keys) {

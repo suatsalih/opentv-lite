@@ -14,10 +14,10 @@ export const en = {
   guide_no_info: "No guide information",
   guide_next: "Next {time} {title}",
   guide_watch: "Watch",
-  guide_loading: "Loading channels…",
+  guide_loading: "Loading your channels",
   guide_empty_favourites: "No favourites yet. Highlight a channel and press the yellow button to add one.",
   guide_empty: "No channels in this category.",
-  guide_refreshing: "Updating the guide…",
+  guide_refreshing: "Refreshing…",
 
   player_loading: "Tuning…",
   player_hint: "▲▼ change channel · OK info · Back guide",
@@ -27,7 +27,7 @@ export const en = {
     "A free, open-source IPTV player. Add the details your provider sent you. OpenTV Lite supplies no channels of its own.",
   add_title: "Add a provider",
   add_kind_xtream: "Xtream Codes login",
-  add_kind_m3u: "M3U playlist link",
+  add_kind_m3u: "M3U playlist URL",
   add_name: "Name (optional)",
   add_server: "Server address",
   add_server_hint: "e.g. http://example.com:8080 — or paste the whole link your provider sent",
@@ -35,7 +35,7 @@ export const en = {
   add_password: "Password",
   add_playlist: "Playlist URL",
   add_epg: "Guide (XMLTV) URL — optional",
-  add_format: "Live stream format",
+  add_format: "Stream format",
   add_format_hls: "HLS (recommended)",
   add_format_ts: "MPEG-TS",
   add_type_hint: "Press OK to type",
@@ -48,10 +48,10 @@ export const en = {
   settings_title: "Settings",
   settings_providers: "Providers",
   settings_add_provider: "Add a provider",
-  settings_refresh: "Refresh channels and guide",
+  settings_refresh: "Refresh",
   settings_remove: "Remove",
   settings_remove_confirm: "Press OK again to remove {name}",
-  settings_channels: "{count} channels",
+  settings_channels: "Channels: {count}",
   settings_never_synced: "Not loaded yet",
   settings_about: "About",
 
@@ -60,7 +60,7 @@ export const en = {
     "OpenTV Lite is the big-screen edition of OpenTV for Samsung and LG TVs. It is free and open source under the GNU GPL v3 — anyone can read the code, build it and keep it alive.",
   about_support_title: "Support the project",
   about_support_body:
-    "OpenTV is free and always will be — nothing is gated. If it's useful and you'd like to chip in, a one-off tip keeps the updates coming. Entirely optional, and genuinely appreciated.",
+    "OpenTV is free and always will be — nothing is gated. If it's useful and you'd like to chip in, a one-off tip keeps the updates coming: new features, fixes and support all come out of spare evenings. Entirely optional, and genuinely appreciated.",
   about_donate_paypal: "Donate via PayPal",
   about_scan_to_donate: "Scan to donate",
   about_links_title: "Licence & links",
@@ -71,7 +71,6 @@ export const en = {
   about_version: "Version {version}",
 
   exit_confirm: "Press Back again to exit",
-  error_title: "Something went wrong",
   back: "Back",
 };
 

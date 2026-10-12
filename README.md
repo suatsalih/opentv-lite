@@ -19,9 +19,13 @@ No account. No subscription. No server of ours between you and your provider.
 - **Catch-up** of past programmes where your Xtream provider offers it
 - **Favourites** (yellow button), channel up/down zapping, reopens on the last channel
 - **Settings** to refresh or remove providers, or add another
+- **31 languages**, picked from the TV's language: English, Arabic, Bulgarian, Chinese, Croatian,
+  Czech, Danish, Dutch, Finnish, French, German, Greek, Hindi, Hungarian, Indonesian, Italian,
+  Japanese, Korean, Norwegian, Persian, Polish, Portuguese, Romanian, Russian, Slovak, Spanish,
+  Swedish, Thai, Turkish, Ukrainian and Vietnamese — the same set as the Android app
 - **About** with licence, links and the PayPal donation QR code
 
-Coming next: movies and series, search, profiles, parental PIN, reminders and translations.
+Coming next: movies and series, search, profiles, parental PIN and reminders.
 
 ## Screenshots
 
@@ -139,6 +143,13 @@ node tools/e2e.mjs --m3u          # the same with an M3U playlist
 The acceptance run drives the app only with remote keys and saves a screenshot of every step
 to `e2e-shots/`. `node tools/screenshots.mjs` (same setup) regenerates the README screenshots. Real providers send H.264, which TVs decode in hardware but the open-source
 Chromium used for automated tests cannot — hence the VP9 mode of the fake provider.
+
+## Translations
+
+`src/i18n/` holds one file per language. Most strings are OpenTV's own Android translations,
+reused word for word so both apps speak the same way; the Lite-only ones were translated for
+this project. Native speakers are very welcome to correct any of them. `npm test` fails if a
+language is missing a string or breaks a `{placeholder}`.
 
 ## How it relates to OpenTV
 
