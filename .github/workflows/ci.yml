@@ -1,0 +1,62 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  check:
+    name: Typecheck, unit tests, builds
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+
+      # An LG package anyone can sideload onto a TV in developer mode or the webOS simulator.
+      - name: Package for LG webOS
+        run: |
+          npm install -g @webos-tools/cli
+          ares-package dist/webos -o dist
+      - uses: actions/upload-artifact@v4
+        with:
+          name: builds
+          path: |
+            dist/browser
+            dist/tizen
+            dist/webos
+            dist/*.ipk
+
+  acceptance:
+    name: Acceptance (remote-driven, headless Chromium)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - run: npx playwright install --with-deps chromium
+      - name: Start fake provider and dev server
+        run: |
+          MOCK_CODEC=vp9 node tools/mock-provider.mjs > mock.log 2>&1 &
+          node scripts/dev.mjs > dev.log 2>&1 &
+          for i in $(seq 1 120); do
+            curl -sf -o /dev/null localhost:8090/vp9/init.mp4 && curl -sf -o /dev/null localhost:8080 && break
+            sleep 1
+          done
+      - run: node tools/e2e.mjs
+      - run: node tools/e2e.mjs --m3u
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: acceptance-screenshots
+          path: e2e-shots

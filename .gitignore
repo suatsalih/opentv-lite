@@ -1,0 +1,11 @@
+node_modules/
+dist/
+*.wgt
+*.ipk
+.DS_Store
+# Signing material must never be committed.
+*.p12
+author.p12
+distributor.p12
+tools/.media/
+e2e-shots/

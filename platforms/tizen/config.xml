@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Tizen (Samsung TV) app manifest for OpenTV Lite.
+  The package id must be 10 letters/digits and unique in Samsung's store; change it before
+  publishing under your own seller account if Samsung asks.
+-->
+<widget xmlns="http://www.w3.org/ns/widgets" xmlns:tizen="http://tizen.org/ns/widgets"
+        id="http://github.com/suatsalih/opentv-lite" version="@VERSION@" viewmodes="maximized">
+  <tizen:application id="OTVLite001.OpenTVLite" package="OTVLite001" required_version="4.0"/>
+  <tizen:profile name="tv-samsung"/>
+  <name>OpenTV Lite</name>
+  <description>Free, open-source IPTV player. Bring your own provider.</description>
+  <author href="https://github.com/suatsalih/opentv-lite">OpenTV Contributors</author>
+  <license href="https://www.gnu.org/licenses/gpl-3.0.html">GPL-3.0-or-later</license>
+  <content src="index.html"/>
+  <icon src="icon.png"/>
+  <!-- Providers live on arbitrary hosts and ports. -->
+  <access origin="*" subdomains="true"/>
+  <tizen:allow-navigation>*</tizen:allow-navigation>
+  <tizen:content-security-policy>default-src * 'unsafe-inline' 'unsafe-eval' data: blob:; img-src * data: blob:; media-src * blob:;</tizen:content-security-policy>
+  <tizen:privilege name="http://tizen.org/privilege/internet"/>
+  <tizen:privilege name="http://tizen.org/privilege/tv.inputdevice"/>
+  <tizen:privilege name="http://developer.samsung.com/privilege/avplay"/>
+  <tizen:setting screen-orientation="landscape" context-menu="disable" background-support="disable" encryption="disable" install-location="auto" hwkey-event="enable"/>
+  <feature name="http://tizen.org/feature/screen.size.normal.1080.1920"/>
+</widget>

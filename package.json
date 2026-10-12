@@ -1,0 +1,29 @@
+{
+  "name": "opentv-lite",
+  "version": "0.1.0",
+  "private": true,
+  "description": "OpenTV Lite — a free, open-source IPTV player for Samsung (Tizen) and LG (webOS) TVs.",
+  "license": "GPL-3.0-or-later",
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "build": "node scripts/build.mjs",
+    "mock": "node tools/mock-provider.mjs",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "check": "npm run typecheck && npm test && npm run build"
+  },
+  "dependencies": {
+    "fflate": "^0.8.3",
+    "hls.js": "^1.7.3",
+    "preact": "^11.0.1",
+    "qrcode-generator": "^2.0.4"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "esbuild": "^0.28.2",
+    "playwright": "^1.56.1",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.4"
+  }
+}
